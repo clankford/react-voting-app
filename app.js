@@ -2,19 +2,26 @@ const Product = React.createClass({
     render: function() {
         return (
             <div className='item'>
-                <div className='image'>
-                    <img src='images/products/image-aqua.png' />
+                <div className='small image'>
+                    <img src={this.props.product_image_url} />
                 </div>
                 <div class='middle aligned content'>
+                    <div className='header'>
+                        <a>
+                            <i className='large caret up icon'></i>
+                        </a>
+                        {this.props.votes}
+                    </div>
                     <div className='description'>
-                        <a>Product Number 1</a>
-                        <p>A description of product number 1.</p>
+                        <a href={this.props.url}>
+                            {this.props.title}
+                        </a>
                     </div>
                     <div className='extra'>
                         <span>Submitted by:</span>
                         <img
                             className='ui avatar image'
-                            src='images/avatars/daniel.jpg'
+                            src={this.props.submitter_avatar_url}
                         />
                     </div>
                 </div>
@@ -25,9 +32,18 @@ const Product = React.createClass({
 
 const ProductList = React.createClass({
    render: function() {
+       const product = Data[0];
        return (
            <div class='ui items'>
-               <Product />
+               <Product 
+                   id={product.id}
+                   title={product.title}
+                   description={product.description}
+                   url={product.url}
+                   votes={product.votes}
+                   submitter_avatar_url={product.submitter_avatar_url}
+                   product_image_url={product.product_image_url}
+               />
            </div>
        );
    } 
