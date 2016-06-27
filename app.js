@@ -44,26 +44,21 @@ const Product = React.createClass({
 const ProductList = React.createClass({
     getInitialState: function() {
        return {
-           products: [],
-           sort: 'descending'
+           products: []
        };
     },
     componentDidMount: function() {
        this.updateState();
     },
-    updateState: function() {
-        if (this.state.sort === 'descending') {
+    updateState: function(sortOrder) {
             const products = Data.sort((a, b) => {
-                return b.votes - a.votes;
+                if (sortOrder === 'ascending') {
+                    return a.votes - b.votes;
+                }
+                else
+                    return b.votes - a.votes;
             });
-            this.setState({ products: products});
-        }
-        else {
-            const products = Data.sort((a, b) => {
-                return a.votes - b.votes;
-            });
-            this.setState({ products: products });
-        }   
+            this.setState({ products: products });   
     },
     handleProductUpVote: function(productId) {
         Data.forEach((el) => {
@@ -85,12 +80,10 @@ const ProductList = React.createClass({
     },
     handleToggleSort: function() {
         if (this.state.sort === 'descending') {
-            this.setState({ sort: 'ascending'});
-            this.updateState(); 
+            this.updateState('ascending'); 
         }
         else {
-            this.setState({ sort: 'descending'}); 
-            this.updateState();
+            this.updateState('descending');
         }
     },
     render: function() {
