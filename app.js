@@ -42,39 +42,58 @@ const Product = React.createClass({
 });
 
 const ProductList = React.createClass({
-   getInitialState: function() {
+    getInitialState: function() {
        return {
            products: [],
+           sort: 'descending'
        };
-   },
-   componentDidMount: function() {
+    },
+    componentDidMount: function() {
        this.updateState();
-   },
-   updateState: function() {
-       const products = Data.sort((a, b) => {
-           return b.votes - a.votes;
-       });
-       this.setState({ products: products });
-   },
-   handleProductUpVote: function(productId) {
-       Data.forEach((el) => {
-           if (el.id === productId) {
-               el.votes = el.votes + 1;
-               return;
-           }
-       });
-       this.updateState();
-   },
-   handleProductDownVote: function(productId) {
-       Data.forEach((el) => {
-           if (el.id === productId) {
-               el.votes = el.votes - 1;
-               return;
-           }
-       });
-       this.updateState();
-   },
-   render: function() {
+    },
+    updateState: function() {
+        if (this.state.sort === 'descending') {
+            const products = Data.sort((a, b) => {
+                return b.votes - a.votes;
+            });
+            this.setState({ products: products, sort: 'ascending' });
+        }
+        else {
+            const products = Data.sort((a, b) => {
+                return a.votes - b.votes;
+            });
+            this.setState({ products: products });
+        }   
+    },
+    handleProductUpVote: function(productId) {
+        Data.forEach((el) => {
+            if (el.id === productId) {
+                el.votes = el.votes + 1;
+                return;
+            }
+        });
+        this.updateState();
+    },
+    handleProductDownVote: function(productId) {
+        Data.forEach((el) => {
+            if (el.id === productId) {
+                el.votes = el.votes - 1;
+                return;
+            }
+        });
+        this.updateState();
+    },
+    handleToggleSort: function() {
+        if (this.state.sort === 'descending') {
+            this.setState({ sort: 'ascending'});
+            this.updateState(); 
+        }
+        else {
+            this.setState({ sort: 'descending'}); 
+            this.updateState();
+        }
+    },
+    render: function() {
         const products = this.state.products.map((product) => {      
             return (
                     <Product 
@@ -92,11 +111,17 @@ const ProductList = React.createClass({
             );
         });
         return (
+            
             <div className='ui items'>
+                <div className='header'>
+                <a onClick={this.handleToggleSort}>
+                    Sort Toggle
+                </a>
+            </div>
                 {products}
             </div>
         )
-    } 
+    }
 });
 
 ReactDOM.render(
