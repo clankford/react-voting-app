@@ -56,7 +56,7 @@ const ProductList = React.createClass({
             const products = Data.sort((a, b) => {
                 return b.votes - a.votes;
             });
-            this.setState({ products: products, sort: 'ascending' });
+            this.setState({ products: products});
         }
         else {
             const products = Data.sort((a, b) => {
