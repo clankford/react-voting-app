@@ -41,24 +41,66 @@ const Product = React.createClass({
     }
 });
 
+const Sort = React.createClass({
+    handleSortOrder: function() {
+        this.props.onSort();
+    },
+    render: function() {
+        return (
+            <div className='header'>
+                <a onClick={this.handleSortOrder}>
+                    Sort Toggle: {this.props.sortBy}
+                </a>
+            </div>
+        )
+    }
+});
+
 const ProductList = React.createClass({
     getInitialState: function() {
        return {
-           products: []
+           products: [],
+           sort: 'descending'
        };
     },
     componentDidMount: function() {
        this.updateState();
     },
-    updateState: function(sortOrder) {
-            const products = Data.sort((a, b) => {
-                if (sortOrder === 'ascending') {
-                    return a.votes - b.votes;
-                }
-                else
-                    return b.votes - a.votes;
-            });
-            this.setState({ products: products });   
+    updateState: function(toggleSort) {
+        if (this.state.sort === 'descending') {
+            if (toggleSort) {
+                const products = this.sortAscending();
+                this.setState({ products: products, sort: 'ascending'})
+            }
+            else {
+                const products = this.sortDescending();
+                this.setState({ products: products });
+            }
+        }
+        if (this.state.sort === 'ascending') {
+            if (toggleSort) {
+                const products = this.sortDescending();
+                this.setState({ products: products, sort: 'descending'})
+            }
+            else {
+                const products = this.sortAscending();
+                this.setState({ products: products });
+            }
+        }
+    },
+    sortDescending: function() {
+        return (
+            Data.sort((a, b) => {
+                return b.votes - a.votes;
+            })
+        )
+    },
+    sortAscending: function() {
+        return (
+            Data.sort((a, b) => {
+                return a.votes - b.votes;
+            })
+        )
     },
     handleProductUpVote: function(productId) {
         Data.forEach((el) => {
@@ -78,13 +120,8 @@ const ProductList = React.createClass({
         });
         this.updateState();
     },
-    handleToggleSort: function() {
-        if (this.state.sort === 'descending') {
-            this.updateState('ascending'); 
-        }
-        else {
-            this.updateState('descending');
-        }
+    handleProductSort: function() {
+        this.updateState(true);
     },
     render: function() {
         const products = this.state.products.map((product) => {      
@@ -104,13 +141,11 @@ const ProductList = React.createClass({
             );
         });
         return (
-            
             <div className='ui items'>
-                <div className='header'>
-                <a onClick={this.handleToggleSort}>
-                    Sort Toggle
-                </a>
-            </div>
+                <Sort 
+                    onSort={this.handleProductSort}
+                    sortBy={this.state.sort}
+                />
                 {products}
             </div>
         )
